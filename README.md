@@ -20,7 +20,7 @@ cabal run
 ```
 
 # Project structure
-
+```
 src/
 ├── Rules/
 │   ├── Conditionals.hs
@@ -31,3 +31,4 @@ src/
 ├── ProofEngine.hs
 ├── UI.hs
 └── Main.hs
+```
