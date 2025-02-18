@@ -57,9 +57,18 @@ elimConjunction :: Prop -> Maybe (Prop, Prop)
 elimConjunction (And p q) = Just (q, p)
 elimConjunction _ = Nothing
 
-simplification :: Prop -> Maybe Prop
-simplification (And p q) = Just p
-simplification _ = Nothing
+simplification :: Prop -> Int -> Maybe Prop
+simplification (And p q) n = case n of
+  1 -> Just p
+  2 -> Just q
+  _ -> Nothing
+simplification (Or p q) n = case n of
+  1 -> Just p
+  2 -> Just q
+  _ -> Nothing
+simplification _ _ = Nothing
+
+--TODO: Change Double Negation to be able to aply on single element of the proposition
 
 doubleNegation :: Prop -> Maybe Prop
 doubleNegation (Not (Not p)) = Just p
@@ -82,3 +91,43 @@ elimBiconditional (Bicdt p q) (Or p' q')
   | p == p' && q == q' = Just (And p q)
 elimBiconditional (Bicdt p q) (Or (Not p') (Not q'))
   | p == p' && q == q' = Just (And (Not p) (Not q))
+elimBiconditional _ _ = Nothing
+
+-- Equivalence rules
+
+deMorgan :: Prop -> Maybe Prop
+deMorgan (Not (And p q)) = Just (Or (Not p) (Not q))
+deMorgan (Not (Or p q)) = Just (And (Not p) (Not q))
+deMorgan _ = Nothing
+
+condEq :: Prop -> Maybe Prop
+condEq (Impl p q) = Just (Or (Not p) q)
+condEq _ = Nothing
+
+contraPositive :: Prop -> Maybe Prop
+contraPositive (Impl (Not p) (Not q)) = Just (Impl q p)
+contraPositive (Impl p q) = Just (Impl (Not q) (Not p))
+contraPositive _ = Nothing
+
+idempot :: Prop -> Maybe Prop
+idempot (And p p') | p == p' = Just p
+idempot p = Just (Or p p)
+
+comut :: Prop -> Maybe Prop
+comut (Or p q) = Just (Or q p)
+comut (And p q) = Just (And q p)
+comut _ = Nothing
+
+exportImport :: Prop -> Maybe Prop
+exportImport (Impl (And p q) r) = Just (Impl p (Impl q r))
+exportImport (Impl p (Impl q r)) = Just (Impl (And p q) r)
+exportImport _ = Nothing
+
+association :: Prop -> Maybe Prop
+association (And p (And q r)) = Just (And (And p q) r)
+association (Or p (Or q r)) = Just (Or (Or p q) r)
+
+distribuition :: Prop -> Maybe Prop
+distribuition (And p (Or q r)) = Just (Or (And p q) (And p r))
+distribuition (Or p (And q r)) = Just (And (Or p q) (Or p r))
+distribuition _ = Nothing

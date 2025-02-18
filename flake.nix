@@ -1,4 +1,3 @@
-# language: nix
 {
   description = "A flake for Haskell development";
 

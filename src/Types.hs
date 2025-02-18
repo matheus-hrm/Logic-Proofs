@@ -39,6 +39,14 @@ data Rule
   | BiconditionalElimination
   | Deduction
   | ImplicationIntroduction
+  | DeMorgan
+  | Conditional
+  | Contrapositive
+  | Idempotency
+  | Comutation
+  | ExportationImportation
+  | Association
+  | Distribuition
   deriving (Eq, Show)
 
 data ProofState = ProofState
